@@ -1,7 +1,5 @@
 #include <ros/ros.h>
-#include <ros/String.h>
-
-
+#include "rosserial_music/rosserial_music_srv.h"
 
 /** @brief Note sa, one of the Saptha Swaras. Frequency at 261 Hz  */
 #define  s     3830    
@@ -24,20 +22,30 @@
 /** @brief To reset notes. Named it Z for 0 Hz  */
 #define  Z     0       
 
-using namespace ros;
+using ros::NodeHandle;
+using ros::ServiceClient;
+using rosserial_music::rosserial_music_srv;
+using ros::Rate;
+using ros::WallTimer;
+using ros::WallDuration;
+using std::vector;
+using std::bind;
+using ros::init;
+using ros::ok;
+using ros::spinOnce;
+using ros::WallTimerEvent;
 
-
-
-class music_publisher
+class music_client
 {
 public:
-    music_publisher();
-    void loop_function();
+    music_client();
+    void timer_callback(const WallTimerEvent&);
 private:
-    NodeHandle nh_;
+    NodeHandle nh;
     ServiceClient client;
-    rosserial_music::rosserial_music music;
+    rosserial_music_srv music;
     Rate loop_rate;
+    WallTimer timer;
     vector<int> notes;
     vector<int> tune;
 };
